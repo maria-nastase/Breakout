@@ -1,9 +1,12 @@
+score = 0
+ballSpeedLvl = 1
+controlKeyX = 0
 def setup():
     global img, interface
     size(700,1000)
     img = loadImage("img.PNG")
-    interface = 0
-    
+    interface = 1
+
 def draw():
     if interface == 0:
         welcomeScreen()
@@ -71,19 +74,56 @@ def welcomeScreen():
     fill(255)
     text("PRESS TO START",235,933)
      
-    def gameplayScreen():
+    
+    
+def gameplayScreen():
+    global score, controlKeyX
     #700x1000
     #background colour
     background(30,25,35)
     
-    #score
-    rect()
-    text("score",20,20)
+    #scoredisplay
+    stroke(255)
+    fill(100,75,75)
+    rect(0,0,699,150)
+    rect(20,10,210,130)
+    textSize(60)
+    fill(255)
+    text("score:",40,60)
+    text(score,100,130)
     
+    #ball speed lvl display
+    fill(100,75,75)
+    rect(260,10,250,130)
+    textSize(40)
+    fill(255)
+    text("ball Speed:",280,60)
+    text("Lvl",330,120)
+    text(ballSpeedLvl,420,120)
+    
+    #pause/resume buttom
+    fill(100,75,75)
+    rect(540,10,140,130)
+    textSize(30)
+    fill(255)
+    text("Pause",565,50)
+    text("/",600,80)
+    text("resume",555,115)
+
     #game-screen
     fill(100)
     rect(50,200,600,700)
     
     #control area
     fill(100,75,75)
-    rect(0,900,1000,100)
+    rect(0,900,699,100)
+    fill(0)
+    rect(50,940,600,20)
+    fill(100)
+    if mouseX >50 and mouseX <650:
+        controlKeyX = mouseX-25
+    elif mouseX <50:
+        controlKeyX = 25
+    elif mouseX >650:
+        controlKeyX = 625
+    rect(controlKeyX,920,50,60) #draw controlKey
