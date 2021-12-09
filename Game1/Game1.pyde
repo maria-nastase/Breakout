@@ -2,7 +2,7 @@ def setup():
     global img, interface
     size(700,1000)
     img = loadImage("img.PNG")
-    interface = 0
+    interface = 1
     
 def draw():
     if interface == 0:
