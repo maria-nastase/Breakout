@@ -2,7 +2,7 @@ def setup():
     global img, interface
     size(700,1000)
     img = loadImage("img.PNG")
-    interface = 1
+    interface = 0
     
 def draw():
     if interface == 0:
@@ -71,4 +71,19 @@ def welcomeScreen():
     fill(255)
     text("PRESS TO START",235,933)
      
+    def gameplayScreen():
+    #700x1000
+    #background colour
+    background(30,25,35)
     
+    #score
+    rect()
+    text("score",20,20)
+    
+    #game-screen
+    fill(100)
+    rect(50,200,600,700)
+    
+    #control area
+    fill(100,75,75)
+    rect(0,900,1000,100)
