@@ -1,1 +1,74 @@
-
+def setup():
+    global img, interface
+    size(700,1000)
+    img = loadImage("img.PNG")
+    interface = 1
+    
+def draw():
+    if interface == 0:
+        welcomeScreen()
+    elif interface == 1:
+        gameplayScreen()
+    
+def welcomeScreen():
+    #background colour
+    background(30,25,35)
+ 
+    #effect image
+    image(img,350,100)
+    #"BREAKOUT" title shadow
+    fill(255)
+    textSize(120)
+    text("BREAKOUT",37,303)
+    
+    #"BREAKOUT" title
+    fill(100,100,150)
+    textSize(120)
+    text("BREAKOUT",40,300)
+    
+    #decorations
+    noStroke()
+    fill(255)
+    rect(425,335,190,50)
+    fill(170,80,75)
+    rect(430,330,190,50)
+    strokeWeight(12)
+    stroke(170,80,75)
+    line(200,350,210,350)
+    line(230,350,270,350)
+    line(290,350,410,350)
+    line(170,375,180,375)
+    line(200,375,250,375)
+    line(270,375,390,375)
+    fill(255)
+    textSize(23)
+    text("ARCADE",455,355)
+    text("GAME",530,370)
+    
+    #Instruction
+    textSize(40)
+    text("INSTRUCTIONS & RULES",130,450)
+    textSize(20)
+    text("-a layer of bricks lines the top third of the screen and the goal",50,500)
+    text("is to destroy them all by repeatedly bouncing a ball off a paddle",50,530)
+    text(" into them.",50,560)
+    text("-by using the walls and/or the paddle below to hit the ball",50,590)
+    text("against the bricks and eliminate them.",50,620)
+    text("-If the player's paddle misses the ball's rebound, they will lose",50,650)
+    text("a turn. The player has three turns to try to clear two screens of",50,680)
+    text("bricks.",50,710)
+    text("The paddle shrinks to one-half its size after the ball has broken",50,740)
+    text("through the red row and hit the upper wall.",50,770)
+    text("-Ball speed increases at specific intervals: after four hits, after",50,800)
+    text("twelve hits, and after making contact with the orange and red",50,830)
+    text("rows.",50,860)
+    
+    #press to start
+    stroke(255)
+    fill(170,80,75)
+    rect(200,890,300,70)
+    textSize(30)
+    fill(255)
+    text("PRESS TO START",235,933)
+     
+    
