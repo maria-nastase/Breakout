@@ -1,6 +1,7 @@
 add_library('minim')
 import random
-
+######################################################################################
+#global variables
 score = 0
 ballSpeedLvl = 1
 controlKeyX = 350
@@ -8,8 +9,18 @@ paddlePosition = 350
 
 ballX = 0
 ballY = 0
-
-
+bricks = [
+[[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]],
+[[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]],
+[[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]],
+[[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]],
+[[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]],
+[[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]],
+[[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]],
+[[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]],
+]
+######################################################################################
+#main functions
 def setup():
     global img, interface
     size(700,1000)
@@ -21,7 +32,9 @@ def draw():
         welcomeScreen()
     elif interface == 1:
         gameplayScreen()
-    
+        
+######################################################################################
+#interfaces    
 def welcomeScreen():
     #background colour
     background(30,25,35)
@@ -82,16 +95,22 @@ def welcomeScreen():
     textSize(30)
     fill(255)
     text("PRESS TO START",235,933)
-     
-    
-    
+
 def gameplayScreen():
     global score, controlKeyX, paddlePosition
     #700x1000
     #background colour
     background(30,25,35)
+    scoreDisplay()
+    ballSpeedDisplay()
+    pauseButtomDisplay()
+    gameArea()
+    drawPaddle()
+    drawControlArea()
     
-    #scoredisplay
+######################################################################################    
+#functions
+def scoreDisplay():
     strokeWeight(1)
     stroke(255)
     fill(100,75,75)
@@ -102,7 +121,7 @@ def gameplayScreen():
     text("score:",40,60)
     text(score,100,130)
     
-    #ball speed lvl display
+def ballSpeedDisplay():
     fill(100,75,75)
     rect(260,10,250,130)
     textSize(40)
@@ -111,7 +130,7 @@ def gameplayScreen():
     text("Lvl",330,120)
     text(ballSpeedLvl,420,120)
     
-    #pause/resume buttom
+def pauseButtomDisplay():
     fill(100,75,75)
     rect(540,10,140,130)
     textSize(30)
@@ -120,11 +139,11 @@ def gameplayScreen():
     text("/",600,80)
     text("resume",555,115)
 
-    #game-screen
+def gameArea():
     fill(100)
     rect(50,200,600,700)
     
-    # bricks
+# bricks
     # row 1
     noStroke()
     fill(255, 17, 0)
@@ -219,12 +238,12 @@ def gameplayScreen():
     rect(535, 490, 50, 30)
     rect(595, 490, 50, 30)
     
-    #paddle 
+def drawPaddle():
     fill(36, 98, 255)
     rect(controlKeyX, 800, 50, 10)
     print(controlKeyX)
     
-    #control area
+def drawControlArea():
     fill(100,75,75)
     rect(0,900,699,100)
     fill(0)
