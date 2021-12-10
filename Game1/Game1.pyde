@@ -122,7 +122,7 @@ def gameplayScreen():
     if keyPressed == True:
         controlKeyX = paddlePosition 
     else:
-        if mouseX >50 and mouseX <650:
+        if mouseX >75 and mouseX <625:
             controlKeyX = mouseX-25
         elif mouseX <50:
             controlKeyX = 50
