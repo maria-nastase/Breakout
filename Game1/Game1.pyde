@@ -6,9 +6,11 @@ score = 0
 ballSpeedLvl = 1
 controlKeyX = 350
 paddlePosition = 350
-
-ballX = 0
-ballY = 0
+ballSpeed = ballSpeedLvl * 2
+ballSpeedX = ballSpeed
+ballSpeedY = -ballSpeed
+ballX = 350
+ballY = 600
 
 bricks = [
 [1,1,1,1,1,1,1,1,1,1],
@@ -30,6 +32,7 @@ def setup():
     size(700,1000)
     img = loadImage("img.PNG")
     interface = 0
+    frameRate(120)
 
 def draw():
     if interface == 0:
@@ -101,7 +104,7 @@ def welcomeScreen():
     text("PRESS TO START",235,933)
 
 def gameplayScreen():
-    global score, controlKeyX, paddlePosition
+    global score, controlKeyX, paddlePosition, ballX, ballY, ballSpeedX, ballSpeedY
     #700x1000
     #background colour
     background(30,25,35)
@@ -109,9 +112,10 @@ def gameplayScreen():
     ballSpeedDisplay()
     pauseButtomDisplay()
     gameArea()
-    drawPaddle()
-    drawControlArea()
     drawBricks()
+    drawPaddle()
+    drawBall()
+    drawControlArea()
 ######################################################################################    
 #functions
 def scoreDisplay():
@@ -144,8 +148,15 @@ def pauseButtomDisplay():
     text("resume",555,115)
 
 def gameArea():
+    global ballX, ballY, ballSpeedX, ballSpeedY
     fill(100)
     rect(50,200,600,700)
+    if ballX < 50:
+        ballSpeedX = ballSpeed
+    elif ballX > 650:
+        ballSpeedX += -ballSpeed
+    if ballY < 200:
+        ballSpeedY += ballSpeed
 
 def drawBrick():
     global brickX,brickY,brickColour,brickColours
@@ -180,8 +191,20 @@ def drawBricks():
                 print("drawBrick")
 
 def drawPaddle():
+    global ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
     fill(36, 98, 255)
     rect(controlKeyX, 800, 50, 10)
+    if ballY >= 800 and ballY <= 810:
+        if ballX >= controlKeyX and ballX <= controlKeyX + 50:
+            ballSpeedX += -ballSpeed
+            ballSpeedY += -ballSpeed
+            
+def drawBall():
+    global ballX, ballY, ballSpeedX, ballSpeedY
+    fill(255)
+    ballX += ballSpeedX
+    ballY += ballSpeedY
+    ellipse(ballX, ballY, 20, 20)
     
 def drawControlArea():
     fill(100,75,75)
