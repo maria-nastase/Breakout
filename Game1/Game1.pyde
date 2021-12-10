@@ -1,6 +1,8 @@
 score = 0
 ballSpeedLvl = 1
-controlKeyX = 0
+controlKeyX = 350
+paddlePosition = 350
+
 def setup():
     global img, interface
     size(700,1000)
@@ -77,7 +79,7 @@ def welcomeScreen():
     
     
 def gameplayScreen():
-    global score, controlKeyX
+    global score, controlKeyX, paddlePosition
     #700x1000
     #background colour
     background(30,25,35)
@@ -117,13 +119,17 @@ def gameplayScreen():
     
     #paddle 
     fill(36, 98, 255)
-    if mouseX >50 and mouseX <650:
-        controlKeyX = mouseX-25
-    elif mouseX <50:
-        controlKeyX = 50
-    elif mouseX >650:
-        controlKeyX = 600
+    if keyPressed == True:
+        controlKeyX = paddlePosition 
+    else:
+        if mouseX >50 and mouseX <650:
+            controlKeyX = mouseX-25
+        elif mouseX <50:
+            controlKeyX = 50
+        elif mouseX >650:
+            controlKeyX = 600
     rect(controlKeyX, 800, 50, 10)
+    print(controlKeyX)
     
     #control area
     fill(100,75,75)
@@ -131,7 +137,7 @@ def gameplayScreen():
     fill(0)
     rect(50,940,600,20)
     fill(100)
-    if mouseX >50 and mouseX <650:
+    if mouseX >=50 and mouseX <=650:
         controlKeyX = mouseX-25
     elif mouseX <50:
         controlKeyX = 25
@@ -144,3 +150,16 @@ def mousePressed():
     if interface == 0:
         if mouseX >= 200 and mouseX <= 500 and mouseY >= 890 and mouseY <= 960:
             interface = 1
+            
+def keyPressed():
+    global controlKeyX, paddlePosition
+    if key == CODED:
+        if keyCode == LEFT:
+            paddlePosition += -10
+        elif keyCode == RIGHT:
+            paddlePosition += 10
+        
+        if paddlePosition < 50:
+            paddlePosition = 50
+        elif paddlePosition > 650:
+            paddlePosition = 600
