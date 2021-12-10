@@ -137,12 +137,12 @@ def gameplayScreen():
     fill(0)
     rect(50,940,600,20)
     fill(100)
-    if mouseX >=50 and mouseX <=650:
+    if mouseX >=75 and mouseX <=625:
         controlKeyX = mouseX-25
     elif mouseX <50:
-        controlKeyX = 25
+        controlKeyX = 50
     elif mouseX >650:
-        controlKeyX = 625
+        controlKeyX = 600
     rect(controlKeyX,920,50,60) #draw controlKey
     
 def mousePressed():
