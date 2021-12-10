@@ -1,7 +1,14 @@
+add_library('minim')
+import random
+
 score = 0
 ballSpeedLvl = 1
 controlKeyX = 350
 paddlePosition = 350
+
+ballX = 0
+ballY = 0
+
 
 def setup():
     global img, interface
@@ -119,15 +126,6 @@ def gameplayScreen():
     
     #paddle 
     fill(36, 98, 255)
-    if keyPressed == True:
-        controlKeyX = paddlePosition 
-    else:
-        if mouseX >75 and mouseX <625:
-            controlKeyX = mouseX-25
-        elif mouseX <50:
-            controlKeyX = 50
-        elif mouseX >650:
-            controlKeyX = 600
     rect(controlKeyX, 800, 50, 10)
     print(controlKeyX)
     
@@ -137,14 +135,18 @@ def gameplayScreen():
     fill(0)
     rect(50,940,600,20)
     fill(100)
+    rect(controlKeyX,920,50,60) #draw controlKey
+ 
+def mouseDragged():
+    global controlKeyX
     if mouseX >=75 and mouseX <=625:
         controlKeyX = mouseX-25
     elif mouseX <50:
         controlKeyX = 50
     elif mouseX >650:
         controlKeyX = 600
-    rect(controlKeyX,920,50,60) #draw controlKey
-    
+    paddlePosition = controlKeyX     
+ 
 def mousePressed():
     global interface
     if interface == 0:
@@ -155,11 +157,11 @@ def keyPressed():
     global controlKeyX, paddlePosition
     if key == CODED:
         if keyCode == LEFT:
-            paddlePosition += -10
+            controlKeyX += -10
         elif keyCode == RIGHT:
-            paddlePosition += 10
+            controlKeyX += 10
         
-        if paddlePosition < 50:
-            paddlePosition = 50
-        elif paddlePosition > 650:
-            paddlePosition = 600
+        if controlKeyX < 50:
+            controlKeyX = 50
+        elif controlKeyX > 650:
+            controlKeyX = 600
