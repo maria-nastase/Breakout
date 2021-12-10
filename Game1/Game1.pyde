@@ -163,5 +163,5 @@ def keyPressed():
         
         if controlKeyX < 50:
             controlKeyX = 50
-        elif controlKeyX > 650:
+        elif controlKeyX > 600:
             controlKeyX = 600
