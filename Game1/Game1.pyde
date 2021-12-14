@@ -9,8 +9,9 @@ paddlePosition = 350
 ballSpeed = ballSpeedLvl * 2
 ballSpeedX = ballSpeed
 ballSpeedY = -ballSpeed
-ballX = 350
+ballX = random.randrange(0, 1000)
 ballY = 600
+lives = 3
 
 bricks = [
 [1,1,1,1,1,1,1,1,1,1],
@@ -109,7 +110,7 @@ def gameplayScreen():
     #background colour
     background(30,25,35)
     scoreDisplay()
-    ballSpeedDisplay()
+    livesDisplay()
     pauseButtomDisplay()
     gameArea()
     drawBricks()
@@ -129,14 +130,13 @@ def scoreDisplay():
     text("score:",40,60)
     text(score,100,130)
     
-def ballSpeedDisplay():
+def livesDisplay():
     fill(100,75,75)
     rect(260,10,250,130)
     textSize(40)
     fill(255)
-    text("ball Speed:",280,60)
-    text("Lvl",330,120)
-    text(ballSpeedLvl,420,120)
+    text("Lives left:",280,60)
+    text(lives,420,120)
     
 def pauseButtomDisplay():
     fill(100,75,75)
@@ -148,7 +148,7 @@ def pauseButtomDisplay():
     text("resume",555,115)
 
 def gameArea():
-    global ballX, ballY, ballSpeedX, ballSpeedY
+    global ballX, ballY, ballSpeedX, ballSpeedY, lives
     fill(100)
     rect(50,200,600,700)
     if ballX < 50:
@@ -157,6 +157,10 @@ def gameArea():
         ballSpeedX += -ballSpeed
     if ballY < 200:
         ballSpeedY += ballSpeed
+    elif ballY > 900:
+        ballX = random.randrange(0, 600)
+        ballY = 600
+        lives -= 1
 
 def drawBrick():
     global brickX,brickY,brickColour,brickColours
@@ -172,12 +176,11 @@ def drawBrick():
     rect(55+brickX,210+brickY,50,30)
 
 def drawBricks():
-    global brickX,brickY,bricks,brickColour
+    global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
     for yNum in range(8):
         for xNum in range(10):
             brickX = xNum*60
             brickY = yNum*40
-            print(yNum,xNum)
             if bricks[yNum][xNum] == 1:
                 if yNum == 0 or yNum ==1:
                     brickColour = 0
@@ -188,7 +191,10 @@ def drawBricks():
                 if yNum == 6 or yNum ==7:
                     brickColour = 3
                 drawBrick()
-                print("drawBrick")
+                if ballX >= brickX + 55 and ballX <= brickX + 105 and ballY >= brickY + 210 and ballY <= brickY + 240 + 30:
+                    ballSpeedX = -ballSpeed
+                    ballSpeedY = -ballSpeed
+                    bricks[yNum][xNum] = 0
 
 def drawPaddle():
     global ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
@@ -196,8 +202,8 @@ def drawPaddle():
     rect(controlKeyX, 800, 50, 10)
     if ballY >= 800 and ballY <= 810:
         if ballX >= controlKeyX and ballX <= controlKeyX + 50:
-            ballSpeedX += -ballSpeed
-            ballSpeedY += -ballSpeed
+            ballSpeedX = ballSpeed
+            ballSpeedY = -ballSpeed
             
 def drawBall():
     global ballX, ballY, ballSpeedX, ballSpeedY
