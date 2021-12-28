@@ -3,10 +3,12 @@ import random
 ######################################################################################
 #global variables
 score = 0
+lvl = 1
+highestLvl = 1
 ballSpeedLvl = 1
 controlKeyX = 350
 paddlePosition = 350
-ballSpeed = ballSpeedLvl * 2
+ballSpeed = 1 + ballSpeedLvl * 0.5
 ballSpeedX = ballSpeed
 ballSpeedY = -ballSpeed
 ballX = random.randrange(0, 1000)
@@ -40,6 +42,8 @@ def draw():
         welcomeScreen()
     elif interface == 1:
         gameplayScreen()
+    elif interface == 2:
+        endScreen()
         
 ######################################################################################
 #interfaces    
@@ -116,10 +120,12 @@ def gameplayScreen():
     drawBricks()
     drawPaddle()
     drawBall()
+    lifeCount()
     drawControlArea()
 ######################################################################################    
 #functions
 def scoreDisplay():
+    global score
     strokeWeight(1)
     stroke(255)
     fill(100,75,75)
@@ -127,9 +133,11 @@ def scoreDisplay():
     rect(20,10,210,130)
     textSize(60)
     fill(255)
-    text("score:",40,60)
-    text(score,100,130)
-    
+    text("Score:",40,60)
+    textAlign(CENTER)
+    text(score,115,130)
+    textAlign(LEFT)
+        
 def livesDisplay():
     fill(100,75,75)
     rect(260,10,250,130)
@@ -154,13 +162,12 @@ def gameArea():
     if ballX < 50:
         ballSpeedX = ballSpeed
     elif ballX > 650:
-        ballSpeedX += -ballSpeed
+        ballSpeedX = -ballSpeed
     if ballY < 200:
-        ballSpeedY += ballSpeed
+        ballSpeedY = ballSpeed
     elif ballY > 900:
         ballX = random.randrange(0, 600)
         ballY = 600
-        lives -= 1
 
 def drawBrick():
     global brickX,brickY,brickColour,brickColours
@@ -176,24 +183,44 @@ def drawBrick():
     rect(55+brickX,210+brickY,50,30)
 
 def drawBricks():
-    global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
+    global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed, lvl, highestLvl, ballSpeedLvl, score
     for yNum in range(8):
         for xNum in range(10):
             brickX = xNum*60
             brickY = yNum*40
             if bricks[yNum][xNum] == 1:
-                if yNum == 0 or yNum ==1:
+                if yNum == 0 or yNum == 1:
                     brickColour = 0
-                if yNum == 2 or yNum ==3:
+                if yNum == 2 or yNum == 3:
                     brickColour = 1
-                if yNum == 4 or yNum ==5:
+                if yNum == 4 or yNum == 5:
                     brickColour = 2
-                if yNum == 6 or yNum ==7:
+                if yNum == 6 or yNum == 7:
                     brickColour = 3
                 drawBrick()
+                
                 if ballX >= brickX + 55 and ballX <= brickX + 105 and ballY >= brickY + 210 and ballY <= brickY + 240 + 30:
-                    ballSpeedX = -ballSpeed
-                    ballSpeedY = -ballSpeed
+                    # change ball speed and calculate score
+                    if yNum == 6 or yNum == 7:
+                        lvl = 1
+                        score += 10
+                    if yNum == 4 or yNum == 5:
+                        lvl = 2
+                        score += 20
+                    elif yNum == 2 or yNum == 3:
+                        lvl = 3
+                        score += 30
+                    elif yNum == 0 or yNum == 1:
+                        lvl = 4
+                        score += 40
+                    if lvl > highestLvl:
+                        highestLvl = lvl
+                        ballSpeedLvl = highestLvl
+                        ballSpeed = 1 + ballSpeedLvl * 0.5
+                        ballSpeedX = ballSpeed
+                        ballSpeedY = ballSpeed
+                    ballSpeedY = -ballSpeedY
+                    # make bricks disappear when touched
                     bricks[yNum][xNum] = 0
 
 def drawPaddle():
@@ -202,15 +229,22 @@ def drawPaddle():
     rect(controlKeyX, 800, 50, 10)
     if ballY >= 800 and ballY <= 810:
         if ballX >= controlKeyX and ballX <= controlKeyX + 50:
-            ballSpeedX = ballSpeed
             ballSpeedY = -ballSpeed
             
 def drawBall():
     global ballX, ballY, ballSpeedX, ballSpeedY
     fill(255)
+    ellipse(ballX, ballY, 20, 20)
     ballX += ballSpeedX
     ballY += ballSpeedY
-    ellipse(ballX, ballY, 20, 20)
+    
+def lifeCount():
+    global lives, ballY, interface
+    if ballY > 900:
+        lives = lives - 1
+        if lives == 0:
+            print(lives)
+            interface = 2
     
 def drawControlArea():
     fill(100,75,75)
@@ -219,6 +253,51 @@ def drawControlArea():
     rect(50,940,600,20)
     fill(100)
     rect(controlKeyX,920,50,60) #draw controlKey
+    
+def endScreen():
+    #background colour
+    background(30,25,35)
+ 
+    #effect image
+    image(img,350,100)
+    #"BREAKOUT" title shadow
+    fill(255)
+    textSize(120)
+    text("BREAKOUT",37,303)
+    
+    #"BREAKOUT" title
+    fill(100,100,150)
+    textSize(120)
+    text("BREAKOUT",40,300)
+    
+    #decorations
+    noStroke()
+    fill(255)
+    rect(425,335,190,50)
+    fill(170,80,75)
+    rect(430,330,190,50)
+    strokeWeight(12)
+    stroke(170,80,75)
+    line(200,350,210,350)
+    line(230,350,270,350)
+    line(290,350,410,350)
+    line(170,375,180,375)
+    line(200,375,250,375)
+    line(270,375,390,375)
+    fill(255)
+    textSize(23)
+    text("ARCADE",455,355)
+    text("GAME",530,370)
+    
+    rect(250, 500, 200, 50)
+    fill(170,80,75)
+    text("TRY AGAIN", 275, 535)
+    noFill()
+    strokeWeight(2)
+    stroke(170,80,75)
+    arc(415, 525, 20, 20, 0, PI + HALF_PI)
+    line(420, 527, 425, 517)
+    line(425, 517, 430, 527)
  
 def mouseDragged():
     global controlKeyX
@@ -231,10 +310,14 @@ def mouseDragged():
     paddlePosition = controlKeyX     
  
 def mousePressed():
-    global interface
+    global interface, lives
     if interface == 0:
         if mouseX >= 200 and mouseX <= 500 and mouseY >= 890 and mouseY <= 960:
             interface = 1
+    elif interface == 2:
+        if mouseX >= 250 and mouseX <= 450 and mouseY >= 500 and mouseY <= 550:
+            interface = 0
+            lives = 3
             
 def keyPressed():
     global controlKeyX, paddlePosition
