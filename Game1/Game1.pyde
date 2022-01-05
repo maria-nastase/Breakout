@@ -183,7 +183,7 @@ def drawBrick():
     rect(55+brickX,210+brickY,50,30)
 
 def drawBricks():
-    global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed, lvl, highestLvl, ballSpeedLvl, score
+    global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY
     for yNum in range(8):
         for xNum in range(10):
             brickX = xNum*60
@@ -198,31 +198,37 @@ def drawBricks():
                 if yNum == 6 or yNum == 7:
                     brickColour = 3
                 drawBrick()
-                
-                if ballX >= brickX + 55 and ballX <= brickX + 105 and ballY >= brickY + 210 and ballY <= brickY + 240 + 30:
+                if ballX >= brickX + 55 and ballX <= brickX + 105 and ballY >= brickY + 210 and ballY <= brickY + 240 + 20:
                     # change ball speed and calculate score
-                    if yNum == 6 or yNum == 7:
-                        lvl = 1
-                        score += 10
-                    if yNum == 4 or yNum == 5:
-                        lvl = 2
-                        score += 20
-                    elif yNum == 2 or yNum == 3:
-                        lvl = 3
-                        score += 30
-                    elif yNum == 0 or yNum == 1:
-                        lvl = 4
-                        score += 40
-                    if lvl > highestLvl:
-                        highestLvl = lvl
-                        ballSpeedLvl = highestLvl
-                        ballSpeed = 1 + ballSpeedLvl * 0.5
-                        ballSpeedX = ballSpeed
-                        ballSpeedY = ballSpeed
+                    addLvlAndScore(yNum)
+                    addSpeed()
                     ballSpeedY = -ballSpeedY
                     # make bricks disappear when touched
                     bricks[yNum][xNum] = 0
 
+def addLvlAndScore(yNum):
+    global lvl,score
+    if yNum == 6 or yNum == 7:
+        lvl = 1
+        score += 10
+    elif yNum == 4 or yNum == 5:
+        lvl = 2
+        score += 20
+    elif yNum == 2 or yNum == 3:
+        lvl = 3
+        score += 30
+    elif yNum == 0 or yNum == 1:
+        lvl = 4
+        score += 40
+
+def addSpeed():
+    global lvl,highestLvl,ballSpeedLvl,ballSpeed,ballSpeedX,ballSpeedY
+    if lvl > highestLvl:
+        highestLvl = lvl
+        ballSpeedLvl = highestLvl
+        ballSpeed = 1 + ballSpeedLvl * 0.5
+        ballSpeedX = ballSpeed
+        ballSpeedY = ballSpeed
 def drawPaddle():
     global ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
     fill(36, 98, 255)
