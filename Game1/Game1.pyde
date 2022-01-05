@@ -198,10 +198,12 @@ def drawBricks():
                 if yNum == 6 or yNum == 7:
                     brickColour = 3
                 drawBrick()
+                
                 if ballX >= brickX + 55 and ballX <= brickX + 105 and ballY >= brickY + 210 and ballY <= brickY + 240 + 20:
                     # change ball speed and calculate score
                     addLvlAndScore(yNum)
                     addSpeed()
+                    ballSpeedX = -ballSpeedX
                     ballSpeedY = -ballSpeedY
                     # make bricks disappear when touched
                     bricks[yNum][xNum] = 0
@@ -229,6 +231,7 @@ def addSpeed():
         ballSpeed = 1 + ballSpeedLvl * 0.5
         ballSpeedX = ballSpeed
         ballSpeedY = ballSpeed
+        
 def drawPaddle():
     global ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
     fill(36, 98, 255)
@@ -249,7 +252,6 @@ def lifeCount():
     if ballY > 900:
         lives = lives - 1
         if lives == 0:
-            print(lives)
             interface = 2
     
 def drawControlArea():
@@ -295,6 +297,7 @@ def endScreen():
     text("ARCADE",455,355)
     text("GAME",530,370)
     
+    # try again button
     rect(250, 500, 200, 50)
     fill(170,80,75)
     text("TRY AGAIN", 275, 535)
@@ -304,6 +307,10 @@ def endScreen():
     arc(415, 525, 20, 20, 0, PI + HALF_PI)
     line(420, 527, 425, 517)
     line(425, 517, 430, 527)
+    
+    # score display
+    rect(175, 600, 325, 100)
+    
  
 def mouseDragged():
     global controlKeyX
@@ -316,7 +323,7 @@ def mouseDragged():
     paddlePosition = controlKeyX     
  
 def mousePressed():
-    global interface, lives, bricks, score
+    global interface, lives, bricks, score, lvl, highestLvl, ballSpeedLvl, ballSpeed
     if interface == 0:
         if mouseX >= 200 and mouseX <= 500 and mouseY >= 890 and mouseY <= 960:
             interface = 1
@@ -325,6 +332,10 @@ def mousePressed():
             interface = 0
             lives = 3
             score = 0
+            lvl = 1
+            highestLvl = 1
+            ballSpeedLvl = 1
+            ballSpeed = 1 + ballSpeedLvl * 0.5
             for y in range(len(bricks)):
                 for x in range(len(bricks[y])):
                     bricks[y][x] = 1
