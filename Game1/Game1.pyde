@@ -310,7 +310,7 @@ def mouseDragged():
     paddlePosition = controlKeyX     
  
 def mousePressed():
-    global interface, lives
+    global interface, lives, bricks, score
     if interface == 0:
         if mouseX >= 200 and mouseX <= 500 and mouseY >= 890 and mouseY <= 960:
             interface = 1
@@ -318,6 +318,10 @@ def mousePressed():
         if mouseX >= 250 and mouseX <= 450 and mouseY >= 500 and mouseY <= 550:
             interface = 0
             lives = 3
+            score = 0
+            for y in range(len(bricks)):
+                for x in range(len(bricks[y])):
+                    bricks[y][x] = 1
             
 def keyPressed():
     global controlKeyX, paddlePosition
