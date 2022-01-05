@@ -11,7 +11,7 @@ paddlePosition = 350
 ballSpeed = 1 + ballSpeedLvl * 0.5
 ballSpeedX = ballSpeed
 ballSpeedY = -ballSpeed
-ballX = random.randrange(0, 1000)
+ballX = random.randrange(100, 600)
 ballY = 600
 lives = 3
 
@@ -166,7 +166,7 @@ def gameArea():
     if ballY < 200:
         ballSpeedY = ballSpeed
     elif ballY > 900:
-        ballX = random.randrange(0, 600)
+        ballX = random.randrange(100, 600)
         ballY = 600
 
 def drawBrick():
