@@ -2,13 +2,13 @@ add_library('minim')
 import random
 ######################################################################################
 #global variables
-score = 2000
-lvl = 4
+score = 0
+lvl = 1
 highestLvl = 1
 ballSpeedLvl = 1
 controlKeyX = 350
 paddlePosition = 350
-ballSpeed = 1 + ballSpeedLvl * 0.5
+ballSpeed = 0.5 + ballSpeedLvl * 0.5
 ballSpeedX = ballSpeed
 ballSpeedY = -ballSpeed
 ballX = random.randrange(100, 600)
@@ -35,7 +35,7 @@ def setup():
     global img, interface
     size(700,1000)
     img = loadImage("img.PNG")
-    interface = 2
+    interface = 0
     frameRate(120)
 
 def draw():
@@ -123,7 +123,7 @@ def gameplayScreen():
     drawBall()
     lifeCount()
     drawControlArea()
-
+    
 def endScreen():
     #background colour
     background(30,25,35)
@@ -196,7 +196,6 @@ def endScreen():
     line(460, 837, 475, 817)
     line(490, 837, 475, 817)
     
- 
 ######################################################################################    
 #functions
 def scoreDisplay():
@@ -276,10 +275,12 @@ def drawBricks():
                 
                 if ballX >= brickX + 55 and ballX <= brickX + 105 and ballY >= brickY + 210 and ballY <= brickY + 240 + 20:
                     # change ball speed and calculate score
+                    if ballX >= brickX + 55 - 2.5 and ballX <= brickX + 55 + 2.5 or ballX >= brickX + 105 - 2.5 and ballX <= brickX + 105 + 2.5:
+                        ballSpeedX = -ballSpeedX
+                    if ballY >= brickY + 210 - 2.5 and ballY <= brickY + 210 + 2.5 or ballY >= brickY + 240 - 2.5 and ballY >= brickY + 240 + 2.5:
+                        ballSpeedY = -ballSpeedY
                     addLvlAndScore(yNum)
                     addSpeed()
-                    ballSpeedX = -ballSpeedX
-                    ballSpeedY = -ballSpeedY
                     # make bricks disappear when touched
                     bricks[yNum][xNum] = 0
 
@@ -303,7 +304,7 @@ def addSpeed():
     if lvl > highestLvl:
         highestLvl = lvl
         ballSpeedLvl = highestLvl
-        ballSpeed = 1 + ballSpeedLvl * 0.5
+        ballSpeed = 0.5 + ballSpeedLvl * 0.5
         ballSpeedX = ballSpeed
         ballSpeedY = ballSpeed
         
@@ -336,7 +337,7 @@ def drawControlArea():
     rect(50,940,600,20)
     fill(100)
     rect(controlKeyX,920,50,60) #draw controlKey
-    
+
 def mouseDragged():
     global controlKeyX
     if mouseX >=75 and mouseX <=625:
@@ -360,7 +361,7 @@ def mousePressed():
             lvl = 1
             highestLvl = 1
             ballSpeedLvl = 1
-            ballSpeed = 1 + ballSpeedLvl * 0.5
+            ballSpeed = 0.5 + ballSpeedLvl * 0.5
             for y in range(len(bricks)):
                 for x in range(len(bricks[y])):
                     bricks[y][x] = 1
