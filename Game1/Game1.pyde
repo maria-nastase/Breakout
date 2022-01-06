@@ -15,6 +15,7 @@ ballX = random.randrange(100, 600)
 ballY = 600
 lives = 3
 allClear = False
+mode = "play"
 
 bricks = [
 [1,1,1,1,1,1,1,1,1,1],
@@ -30,6 +31,7 @@ brickX = 0
 brickY = 0
 brickColour = 0
 brickCounter = 0
+
 ######################################################################################
 #main functions
 def setup():
@@ -119,7 +121,7 @@ def gameplayScreen():
     livesDisplay()
     pauseButtomDisplay()
     gameArea()
-    checkWin()
+    checkWin() 
     drawBricks()
     drawPaddle()
     drawBall()
@@ -168,9 +170,9 @@ def endScreen():
     if allClear == True:
         text("congrats!! you've won the game!!",110,500)
     else:
-        if lvl <= 2:
+        if highestLvl <= 2:
             text("Nice Try!!",290,500)
-        elif lvl > 2:
+        elif highestLvl > 2:
             text("Good job!! close game!!",180,500)
             
     # score display
@@ -182,7 +184,7 @@ def endScreen():
     text("LEVEL",195, 650)
     text("SCORE",355, 650)
     textSize(60)
-    text(lvl,230,715)
+    text(highestLvl,230,715)
     text(score,350,715)
     
     # try again button
@@ -225,11 +227,13 @@ def livesDisplay():
 def pauseButtomDisplay():
     fill(100,75,75)
     rect(540,10,140,130)
-    textSize(30)
     fill(255)
-    text("Pause",565,50)
-    text("/",600,80)
-    text("resume",555,115)
+    if mode == "play":
+        textSize(40)
+        text("Pause",555,85)
+    elif mode == "pause":
+        textSize(30)
+        text("Resume",555,85)
 
 def gameArea():
     global ballX, ballY, ballSpeedX, ballSpeedY, lives
@@ -259,7 +263,7 @@ def drawBrick():
     rect(55+brickX,210+brickY,50,30)
 
 def drawBricks():
-    global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY,brickCounter
+    global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY, brickCounter
     for yNum in range(8):
         for xNum in range(10):
             brickX = xNum*60
@@ -332,13 +336,13 @@ def lifeCount():
         lives = lives - 1
         if lives == 0:
             interface = 2
-            
+
 def checkWin():
     global allClear, interface
     if brickCounter == 80:
         allClear = True
         interface = 2
-    
+        
 def drawControlArea():
     fill(100,75,75)
     rect(0,900,699,100)
@@ -358,10 +362,23 @@ def mouseDragged():
     paddlePosition = controlKeyX     
  
 def mousePressed():
-    global interface, lives, bricks, score, lvl, highestLvl, ballSpeedLvl, ballSpeed, allClear, brickCounter
+    global interface, lives, bricks, score, lvl, highestLvl, ballSpeedLvl, ballSpeed, ballSpeedX, ballSpeedY, originalBallSpeedX, originalBallSpeedY, mode, allClear, brickCounter
     if interface == 0:
         if mouseX >= 200 and mouseX <= 500 and mouseY >= 890 and mouseY <= 960:
             interface = 1
+    elif interface == 1:
+        if mode == "play":
+            if mouseX >= 540 and mouseX <= 680 and mouseY >= 10 and mouseY <= 140: 
+                mode = "pause" 
+                originalBallSpeedX = ballSpeedX
+                originalBallSpeedY = ballSpeedY
+                ballSpeedX = 0
+                ballSpeedY = 0
+        elif mode == "pause":
+            if mouseX >= 540 and mouseX <= 680 and mouseY >= 10 and mouseY <= 140:
+                mode = "play"
+                ballSpeedX = originalBallSpeedX
+                ballSpeedY = originalBallSpeedY
     elif interface == 2:
         if mouseX >= 150 and mouseX <= 550 and mouseY >= 800 and mouseY <= 870:
             interface = 0
