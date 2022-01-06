@@ -2,8 +2,8 @@ add_library('minim')
 import random
 ######################################################################################
 #global variables
-score = 0
-lvl = 1
+score = 2000
+lvl = 4
 highestLvl = 1
 ballSpeedLvl = 1
 controlKeyX = 350
@@ -14,6 +14,7 @@ ballSpeedY = -ballSpeed
 ballX = random.randrange(100, 600)
 ballY = 600
 lives = 3
+allClear = False
 
 bricks = [
 [1,1,1,1,1,1,1,1,1,1],
@@ -34,7 +35,7 @@ def setup():
     global img, interface
     size(700,1000)
     img = loadImage("img.PNG")
-    interface = 0
+    interface = 2
     frameRate(120)
 
 def draw():
@@ -122,6 +123,80 @@ def gameplayScreen():
     drawBall()
     lifeCount()
     drawControlArea()
+
+def endScreen():
+    #background colour
+    background(30,25,35)
+ 
+    #effect image
+    image(img,350,100)
+    #"BREAKOUT" title shadow
+    fill(255)
+    textSize(120)
+    text("BREAKOUT",37,303)
+    
+    #"BREAKOUT" title
+    fill(100,100,150)
+    textSize(120)
+    text("BREAKOUT",40,300)
+    
+    #decorations
+    noStroke()
+    fill(255)
+    rect(425,335,190,50)
+    fill(170,80,75)
+    rect(430,330,190,50)
+    strokeWeight(12)
+    stroke(170,80,75)
+    line(200,350,210,350)
+    line(230,350,270,350)
+    line(290,350,410,350)
+    line(170,375,180,375)
+    line(200,375,250,375)
+    line(270,375,390,375)
+    fill(255)
+    textSize(23)
+    text("ARCADE",455,355)
+    text("GAME",530,370)
+    
+    #level detect
+    rect(100, 440, 500, 100)
+    fill(170,80,75)
+    textSize(30)
+    if allClear == True:
+        text("congrats!! you've won the game!!",110,500)
+    else:
+        if lvl <= 2:
+            text("Nice Try!!",290,500)
+        elif lvl > 2:
+            text("Good job!! close game!!",180,500)
+            
+    # score display
+    fill(255)
+    rect(175, 600, 350, 140)
+    fill(170,80,75)
+    textSize(40)
+    line(330,650,330,700)
+    text("LEVEL",195, 650)
+    text("SCORE",355, 650)
+    textSize(60)
+    text(lvl,230,715)
+    text(score,350,715)
+    
+    # try again button
+    fill(255)
+    rect(150, 800, 400, 70)
+    fill(170,80,75)
+    textSize(40)
+    text("TRY AGAIN", 200, 850)
+    noFill()
+    strokeWeight(6)
+    stroke(170,80,75)
+    arc(455, 835, 40, 40, 0, PI + HALF_PI)
+    line(460, 837, 475, 817)
+    line(490, 837, 475, 817)
+    
+ 
 ######################################################################################    
 #functions
 def scoreDisplay():
@@ -262,56 +337,6 @@ def drawControlArea():
     fill(100)
     rect(controlKeyX,920,50,60) #draw controlKey
     
-def endScreen():
-    #background colour
-    background(30,25,35)
- 
-    #effect image
-    image(img,350,100)
-    #"BREAKOUT" title shadow
-    fill(255)
-    textSize(120)
-    text("BREAKOUT",37,303)
-    
-    #"BREAKOUT" title
-    fill(100,100,150)
-    textSize(120)
-    text("BREAKOUT",40,300)
-    
-    #decorations
-    noStroke()
-    fill(255)
-    rect(425,335,190,50)
-    fill(170,80,75)
-    rect(430,330,190,50)
-    strokeWeight(12)
-    stroke(170,80,75)
-    line(200,350,210,350)
-    line(230,350,270,350)
-    line(290,350,410,350)
-    line(170,375,180,375)
-    line(200,375,250,375)
-    line(270,375,390,375)
-    fill(255)
-    textSize(23)
-    text("ARCADE",455,355)
-    text("GAME",530,370)
-    
-    # try again button
-    rect(250, 500, 200, 50)
-    fill(170,80,75)
-    text("TRY AGAIN", 275, 535)
-    noFill()
-    strokeWeight(2)
-    stroke(170,80,75)
-    arc(415, 525, 20, 20, 0, PI + HALF_PI)
-    line(420, 527, 425, 517)
-    line(425, 517, 430, 527)
-    
-    # score display
-    rect(175, 600, 325, 100)
-    
- 
 def mouseDragged():
     global controlKeyX
     if mouseX >=75 and mouseX <=625:
@@ -328,7 +353,7 @@ def mousePressed():
         if mouseX >= 200 and mouseX <= 500 and mouseY >= 890 and mouseY <= 960:
             interface = 1
     elif interface == 2:
-        if mouseX >= 250 and mouseX <= 450 and mouseY >= 500 and mouseY <= 550:
+        if mouseX >= 150 and mouseX <= 550 and mouseY >= 800 and mouseY <= 870:
             interface = 0
             lives = 3
             score = 0
