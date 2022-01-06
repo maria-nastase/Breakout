@@ -29,6 +29,7 @@ bricks = [
 brickX = 0
 brickY = 0
 brickColour = 0
+brickCounter = 0
 ######################################################################################
 #main functions
 def setup():
@@ -118,6 +119,7 @@ def gameplayScreen():
     livesDisplay()
     pauseButtomDisplay()
     gameArea()
+    checkWin()
     drawBricks()
     drawPaddle()
     drawBall()
@@ -257,7 +259,7 @@ def drawBrick():
     rect(55+brickX,210+brickY,50,30)
 
 def drawBricks():
-    global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY
+    global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY,brickCounter
     for yNum in range(8):
         for xNum in range(10):
             brickX = xNum*60
@@ -283,6 +285,7 @@ def drawBricks():
                     addSpeed()
                     # make bricks disappear when touched
                     bricks[yNum][xNum] = 0
+                    brickCounter += 1
 
 def addLvlAndScore(yNum):
     global lvl,score
@@ -329,6 +332,12 @@ def lifeCount():
         lives = lives - 1
         if lives == 0:
             interface = 2
+            
+def checkWin():
+    global allClear, interface
+    if brickCounter == 80:
+        allClear = True
+        interface = 2
     
 def drawControlArea():
     fill(100,75,75)
@@ -349,7 +358,7 @@ def mouseDragged():
     paddlePosition = controlKeyX     
  
 def mousePressed():
-    global interface, lives, bricks, score, lvl, highestLvl, ballSpeedLvl, ballSpeed
+    global interface, lives, bricks, score, lvl, highestLvl, ballSpeedLvl, ballSpeed, allClear, brickCounter
     if interface == 0:
         if mouseX >= 200 and mouseX <= 500 and mouseY >= 890 and mouseY <= 960:
             interface = 1
@@ -362,6 +371,8 @@ def mousePressed():
             highestLvl = 1
             ballSpeedLvl = 1
             ballSpeed = 0.5 + ballSpeedLvl * 0.5
+            allClear = False
+            brickCounter = 0
             for y in range(len(bricks)):
                 for x in range(len(bricks[y])):
                     bricks[y][x] = 1
