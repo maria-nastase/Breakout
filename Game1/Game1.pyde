@@ -1,22 +1,24 @@
 add_library('minim')
 import random
 ######################################################################################
-#global variables
+# global variables
 score = 0
+lives = 3
+allClear = False
+mode = "play"
+# variables used to control paddle
+controlKeyX = 350
+paddlePosition = 350
+# variables used to control ball and ball speed
 lvl = 1
 highestLvl = 1
 ballSpeedLvl = 1
-controlKeyX = 350
-paddlePosition = 350
 ballSpeed = 0.5 + ballSpeedLvl * 0.5
 ballSpeedX = ballSpeed
 ballSpeedY = -ballSpeed
 ballX = random.randrange(100, 600)
 ballY = 600
-lives = 3
-allClear = False
-mode = "play"
-
+# variables used to control bricks
 bricks = [
 [1,1,1,1,1,1,1,1,1,1],
 [1,1,1,1,1,1,1,1,1,1],
@@ -33,14 +35,23 @@ brickColour = 0
 brickCounter = 0
 
 ######################################################################################
-#main functions
+# main functions
 def setup():
-    global img, interface
+    global img, interface, ballTap, brickTap, click, lostLifeSound, winSound, music
     size(700,1000)
-    img = loadImage("img.PNG")
     interface = 0
     frameRate(120)
-
+    img = loadImage("img.PNG")
+    # sound effects
+    minim = Minim(this)
+    ballTap = minim.loadSample("mixkit-game-ball-tap-2073.wav")
+    brickTap = minim.loadSample("mixkit-unlock-game-notification-253.wav")
+    click = minim.loadSample("mixkit-sci-fi-positive-notification-266.wav")
+    lostLifeSound = minim.loadSample("mixkit-player-losing-or-failing-2042.wav")
+    winSound = minim.loadSample("mixkit-game-level-completed-2059.wav")
+    music = minim.loadFile("arcade-game-music-loop.mp3")
+    music.loop()
+    
 def draw():
     if interface == 0:
         welcomeScreen()
@@ -50,24 +61,25 @@ def draw():
         endScreen()
         
 ######################################################################################
-#interfaces    
+# interfaces    
 def welcomeScreen():
-    #background colour
+    
+    # background colour
     background(30,25,35)
- 
-    #effect image
+    
+    # effect image
     image(img,350,100)
     #"BREAKOUT" title shadow
     fill(255)
     textSize(120)
     text("BREAKOUT",37,303)
     
-    #"BREAKOUT" title
+    # "BREAKOUT" title
     fill(100,100,150)
     textSize(120)
     text("BREAKOUT",40,300)
     
-    #decorations
+    # decorations
     noStroke()
     fill(255)
     rect(425,335,190,50)
@@ -86,25 +98,21 @@ def welcomeScreen():
     text("ARCADE",455,355)
     text("GAME",530,370)
     
-    #Instruction
+    # instructions
     textSize(40)
     text("INSTRUCTIONS & RULES",130,450)
     textSize(20)
-    text("-a layer of bricks lines the top third of the screen and the goal",50,500)
-    text("is to destroy them all by repeatedly bouncing a ball off a paddle",50,530)
-    text(" into them.",50,560)
-    text("-by using the walls and/or the paddle below to hit the ball",50,590)
-    text("against the bricks and eliminate them.",50,620)
-    text("-If the player's paddle misses the ball's rebound, they will lose",50,650)
-    text("a turn. The player has three turns to try to clear two screens of",50,680)
-    text("bricks.",50,710)
-    text("The paddle shrinks to one-half its size after the ball has broken",50,740)
-    text("through the red row and hit the upper wall.",50,770)
-    text("-Ball speed increases at specific intervals: after four hits, after",50,800)
-    text("twelve hits, and after making contact with the orange and red",50,830)
-    text("rows.",50,860)
+    text("-A layer of bricks lines the top third of the screen and the goal",50,500)
+    text("is to destroy them all by repeatedly bouncing a ball off a paddle.",50,530)
+    text("-Eliminate the bricks by using the walls and/or the paddle below",50,560)
+    text("to hit the ball against them.",50,590)
+    text("-If the player's paddle misses the ball's rebound, they will lose",50,620)
+    text("a turn. The player has three turns to try to clear the screen of",50,650)
+    text("bricks.",50,680)
+    text("-The speed of the ball increases after making contact with the",50,710)
+    text("next colour of bricks.", 50, 740)
     
-    #press to start
+    # start button
     stroke(255)
     fill(170,80,75)
     rect(200,890,300,70)
@@ -114,9 +122,10 @@ def welcomeScreen():
 
 def gameplayScreen():
     global score, controlKeyX, paddlePosition, ballX, ballY, ballSpeedX, ballSpeedY
-    #700x1000
-    #background colour
+   
+    # background colour
     background(30,25,35)
+    # functions
     scoreDisplay()
     livesDisplay()
     pauseButtomDisplay()
@@ -163,17 +172,17 @@ def endScreen():
     text("ARCADE",455,355)
     text("GAME",530,370)
     
-    #level detect
+    # detect win or loss
     rect(100, 440, 500, 100)
     fill(170,80,75)
     textSize(30)
     if allClear == True:
-        text("congrats!! you've won the game!!",110,500)
+        text("Congrats!! You've won the game!!",110,500)
     else:
         if highestLvl <= 2:
             text("Nice Try!!",290,500)
         elif highestLvl > 2:
-            text("Good job!! close game!!",180,500)
+            text("Good job!! Close game!!",180,500)
             
     # score display
     fill(255)
@@ -228,29 +237,39 @@ def pauseButtomDisplay():
     fill(100,75,75)
     rect(540,10,140,130)
     fill(255)
+    # to pause
     if mode == "play":
         textSize(40)
         text("Pause",555,85)
+    # to resume
     elif mode == "pause":
         textSize(30)
         text("Resume",555,85)
 
 def gameArea():
     global ballX, ballY, ballSpeedX, ballSpeedY, lives
+    
     fill(100)
     rect(50,200,600,700)
+    
+    # ball bounces off sides
     if ballX < 50:
         ballSpeedX = -ballSpeedX
+        ballTap.trigger()
     elif ballX > 650:
         ballSpeedX = -ballSpeedX
+        ballTap.trigger()
     if ballY < 200:
         ballSpeedY = -ballSpeedY
+        ballTap.trigger()
+    # ball comes back on screen if user misses it
     elif ballY > 900:
         ballX = random.randrange(100, 600)
         ballY = 600
 
 def drawBrick():
     global brickX,brickY,brickColour,brickColours
+    
     noStroke()
     if brickColour == 0:
         fill(255, 17, 0)
@@ -264,6 +283,7 @@ def drawBrick():
 
 def drawBricks():
     global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY, brickCounter
+    
     for yNum in range(8):
         for xNum in range(10):
             brickX = xNum*60
@@ -279,12 +299,13 @@ def drawBricks():
                     brickColour = 3
                 drawBrick()
                 
+                # ball bounces off bricks
                 if ballX >= brickX + 55 and ballX <= brickX + 105 and ballY >= brickY + 210 and ballY <= brickY + 240 + 20:
-                    # change ball speed and calculate score
                     if ballX >= brickX + 55 - 2.5 and ballX <= brickX + 55 + 2.5 or ballX >= brickX + 105 - 2.5 and ballX <= brickX + 105 + 2.5:
                         ballSpeedX = -ballSpeedX
                     if ballY >= brickY + 210 - 2.5 and ballY <= brickY + 210 + 2.5 or ballY >= brickY + 240 - 2.5 and ballY >= brickY + 240 + 2.5:
                         ballSpeedY = -ballSpeedY
+                    brickTap.trigger()
                     addLvlAndScore(yNum)
                     addSpeed()
                     # make bricks disappear when touched
@@ -293,6 +314,9 @@ def drawBricks():
 
 def addLvlAndScore(yNum):
     global lvl,score
+    
+    # find level of brick touched (based on colour)
+    # calculate score
     if yNum == 6 or yNum == 7:
         lvl = 1
         score += 10
@@ -308,6 +332,8 @@ def addLvlAndScore(yNum):
 
 def addSpeed():
     global lvl,highestLvl,ballSpeedLvl,ballSpeed,ballSpeedX,ballSpeedY
+    
+    # ball speed increases as the user touches higher bricks (based on colour)
     if lvl > highestLvl:
         highestLvl = lvl
         ballSpeedLvl = highestLvl
@@ -317,28 +343,33 @@ def addSpeed():
         
 def drawPaddle():
     global ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
+    
     fill(36, 98, 255)
     rect(controlKeyX, 800, 50, 10)
+    # ball bounces off paddle
+    # the angle changes so that the ball does not follow the same path continously
     if ballY >= 800 and ballY <= 810:
         if ballX >= controlKeyX and ballX <= controlKeyX + 50:
+            ballTap.trigger()
             if ballX >= controlKeyX and ballX <= controlKeyX+10 or ballX > controlKeyX+40 and ballX <= controlKeyX+50:
                 ballSpeedY = -ballSpeed - 0.5
-                if ballSpeedX <0:
-                    ballSpeedX -= 1
+                if ballSpeedX < 0:
+                    ballSpeedX = -1
                 else:
-                    ballSpeedX += 1
+                    ballSpeedX = 1
             if ballX > controlKeyX+10 and ballX <= controlKeyX+20 or ballX > controlKeyX+30 and ballX <= controlKeyX+40:
                 ballSpeedY = -ballSpeed  - 0.5
-                if ballSpeedX <0:
-                    ballSpeedX -= 0.5
+                if ballSpeedX < 0:
+                    ballSpeedX = 0.5
                 else:
-                    ballSpeedX += 0.5
+                    ballSpeedX = 0.5
             elif ballX > controlKeyX+20 and ballX <= controlKeyX+30:
-                    ballSpeedY = -ballSpeed -1
-                    ballSpeedX -= 0.5
+                    ballSpeedY = -ballSpeed - 1
+                    ballSpeedX = -0.5
             
 def drawBall():
     global ballX, ballY, ballSpeedX, ballSpeedY
+    
     fill(255)
     ellipse(ballX, ballY, 20, 20)
     ballX += ballSpeedX
@@ -346,18 +377,25 @@ def drawBall():
     
 def lifeCount():
     global lives, ballY, interface
+    
     if ballY > 900:
         lives = lives - 1
+        lostLifeSound.trigger()
+        # end game if there are no more lives
         if lives == 0:
             interface = 2
 
 def checkWin():
     global allClear, interface
+    
+    # check if all bricks are gone
     if brickCounter == 80:
+        winSound.trigger()
         allClear = True
         interface = 2
         
 def drawControlArea():
+    
     fill(100,75,75)
     rect(0,900,699,100)
     fill(0)
@@ -367,6 +405,8 @@ def drawControlArea():
 
 def mouseDragged():
     global controlKeyX
+    
+    # control paddle with mouse
     if mouseX >=75 and mouseX <=625:
         controlKeyX = mouseX-25
     elif mouseX <50:
@@ -377,24 +417,38 @@ def mouseDragged():
  
 def mousePressed():
     global interface, lives, bricks, score, lvl, highestLvl, ballSpeedLvl, ballSpeed, ballSpeedX, ballSpeedY, originalBallSpeedX, originalBallSpeedY, mode, allClear, brickCounter
+    
     if interface == 0:
+        # start button
         if mouseX >= 200 and mouseX <= 500 and mouseY >= 890 and mouseY <= 960:
+            click.trigger()
             interface = 1
+            
     elif interface == 1:
+        # pause button
         if mode == "play":
             if mouseX >= 540 and mouseX <= 680 and mouseY >= 10 and mouseY <= 140: 
+                click.trigger()
+                music.pause()
                 mode = "pause" 
                 originalBallSpeedX = ballSpeedX
                 originalBallSpeedY = ballSpeedY
                 ballSpeedX = 0
                 ballSpeedY = 0
+        # resume button
         elif mode == "pause":
             if mouseX >= 540 and mouseX <= 680 and mouseY >= 10 and mouseY <= 140:
+                click.trigger()
+                music.loop()
                 mode = "play"
                 ballSpeedX = originalBallSpeedX
                 ballSpeedY = originalBallSpeedY
+                
     elif interface == 2:
+        # try again button
         if mouseX >= 150 and mouseX <= 550 and mouseY >= 800 and mouseY <= 870:
+            click.trigger()
+            # reset variables
             interface = 0
             lives = 3
             score = 0
@@ -404,12 +458,15 @@ def mousePressed():
             ballSpeed = 0.5 + ballSpeedLvl * 0.5
             allClear = False
             brickCounter = 0
+            # redraw bricks
             for y in range(len(bricks)):
                 for x in range(len(bricks[y])):
                     bricks[y][x] = 1
             
 def keyPressed():
     global controlKeyX, paddlePosition
+    
+    # control paddle with arrow keys
     if key == CODED:
         if keyCode == LEFT:
             controlKeyX += -10
