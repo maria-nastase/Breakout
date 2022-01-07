@@ -240,11 +240,11 @@ def gameArea():
     fill(100)
     rect(50,200,600,700)
     if ballX < 50:
-        ballSpeedX = ballSpeed
+        ballSpeedX = -ballSpeedX
     elif ballX > 650:
-        ballSpeedX = -ballSpeed
+        ballSpeedX = -ballSpeedX
     if ballY < 200:
-        ballSpeedY = ballSpeed
+        ballSpeedY = -ballSpeedY
     elif ballY > 900:
         ballX = random.randrange(100, 600)
         ballY = 600
@@ -321,7 +321,21 @@ def drawPaddle():
     rect(controlKeyX, 800, 50, 10)
     if ballY >= 800 and ballY <= 810:
         if ballX >= controlKeyX and ballX <= controlKeyX + 50:
-            ballSpeedY = -ballSpeed
+            if ballX >= controlKeyX and ballX <= controlKeyX+10 or ballX > controlKeyX+40 and ballX <= controlKeyX+50:
+                ballSpeedY = -ballSpeed - 0.5
+                if ballSpeedX <0:
+                    ballSpeedX -= 1
+                else:
+                    ballSpeedX += 1
+            if ballX > controlKeyX+10 and ballX <= controlKeyX+20 or ballX > controlKeyX+30 and ballX <= controlKeyX+40:
+                ballSpeedY = -ballSpeed  - 0.5
+                if ballSpeedX <0:
+                    ballSpeedX -= 0.5
+                else:
+                    ballSpeedX += 0.5
+            elif ballX > controlKeyX+20 and ballX <= controlKeyX+30:
+                    ballSpeedY = -ballSpeed -1
+                    ballSpeedX -= 0.5
             
 def drawBall():
     global ballX, ballY, ballSpeedX, ballSpeedY
