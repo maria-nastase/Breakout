@@ -33,7 +33,7 @@ brickX = 0
 brickY = 0
 brickColour = 0
 brickCounter = 0
-
+pause = False
 ######################################################################################
 # main functions
 def setup(): #set up the game
@@ -419,17 +419,18 @@ def mouseDragged(): #mose dragged interactions
     global controlKeyX #global the variables that might be changed in this function
     
     # control paddle with mouse
-    if mouseX >=75 and mouseX <=625: #if the mouse is between the control area
-        controlKeyX = mouseX-25 #control paddle X location is equal to mouse X location
-    elif mouseX <50: #if mouse goes over the left wall
-        controlKeyX = 50 #control key stays at the most-left position
-    elif mouseX >650: #if mouse goes over the right wall
-        controlKeyX = 600 #control key stays at the most-right position
-    paddlePosition = controlKeyX #assign paddle position
+    if pause == False:
+        if mouseX >=75 and mouseX <=625: #if the mouse is between the control area
+            controlKeyX = mouseX-25 #control paddle X location is equal to mouse X location
+        elif mouseX <50: #if mouse goes over the left wall
+            controlKeyX = 50 #control key stays at the most-left position
+        elif mouseX >650: #if mouse goes over the right wall
+            controlKeyX = 600 #control key stays at the most-right position
+        paddlePosition = controlKeyX #assign paddle position
  
 def mousePressed(): #mose pressed interactions
     #global the variables that might be changed in this function
-    global interface, lives, bricks, score, lvl, highestLvl, ballSpeedLvl, ballSpeed, ballSpeedX, ballSpeedY, originalBallSpeedX, originalBallSpeedY, mode, allClear, brickCounter
+    global interface, lives, bricks, score, lvl, highestLvl, ballSpeedLvl, ballSpeed, ballSpeedX, ballSpeedY, originalBallSpeedX, originalBallSpeedY, mode, allClear, brickCounter, pause
     
     if interface == 0: #interactions in the starting screen
         # start button
@@ -448,6 +449,7 @@ def mousePressed(): #mose pressed interactions
                 originalBallSpeedY = ballSpeedY
                 ballSpeedX = 0
                 ballSpeedY = 0
+                pause = True
         # resume button
         elif mode == "pause": #continue the game if it is paused
             if mouseX >= 540 and mouseX <= 680 and mouseY >= 10 and mouseY <= 140:
@@ -456,6 +458,7 @@ def mousePressed(): #mose pressed interactions
                 mode = "play"
                 ballSpeedX = originalBallSpeedX
                 ballSpeedY = originalBallSpeedY
+                pause = False
                 
     elif interface == 2: #interactions in the ending screen
         # try again button
@@ -483,13 +486,14 @@ def keyPressed(): #press key interactions
     global controlKeyX, paddlePosition
     
     # control paddle with arrow keys
-    if key == CODED:
-        if keyCode == LEFT: #paddle goes left if left arrow key is pressed
-            controlKeyX += -10
-        elif keyCode == RIGHT: #paddle goes right if left arrow key is pressed
-            controlKeyX += 10
-        
-        if controlKeyX < 50: 
-            controlKeyX = 50
-        elif controlKeyX > 600:
-            controlKeyX = 600
+    if pause == False:
+        if key == CODED:
+            if keyCode == LEFT: #paddle goes left if left arrow key is pressed
+                controlKeyX += -10
+            elif keyCode == RIGHT: #paddle goes right if left arrow key is pressed
+                controlKeyX += 10
+            
+            if controlKeyX < 50: 
+                controlKeyX = 50
+            elif controlKeyX > 600:
+                controlKeyX = 600
