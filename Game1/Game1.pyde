@@ -36,12 +36,13 @@ brickCounter = 0
 
 ######################################################################################
 # main functions
-def setup():
+def setup(): #set up the game
+    #global the variables that might be changed in this function
     global img, interface, ballTap, brickTap, click, lostLifeSound, winSound, music
-    size(700,1000)
-    interface = 0
-    frameRate(120)
-    img = loadImage("img.PNG")
+    size(700,1000) #set up size of the window
+    interface = 0 #set the starting interface
+    frameRate(120) #set the frame rate
+    img = loadImage("img.PNG") #upload the title page image
     # sound effects
     minim = Minim(this)
     ballTap = minim.loadSample("mixkit-game-ball-tap-2073.wav")
@@ -52,17 +53,17 @@ def setup():
     music = minim.loadFile("arcade-game-music-loop.mp3")
     music.loop()
     
-def draw():
-    if interface == 0:
-        welcomeScreen()
-    elif interface == 1:
+def draw(): #display the interfaces
+    if interface == 0: #interface 0 is the welcome screen
+        welcomeScreen() 
+    elif interface == 1: #interface 1 is the game play screen
         gameplayScreen()
-    elif interface == 2:
+    elif interface == 2: #interface 2 is the ending screen
         endScreen()
         
 ######################################################################################
 # interfaces    
-def welcomeScreen():
+def welcomeScreen(): #to draw the welcome screen
     
     # background colour
     background(30,25,35)
@@ -120,13 +121,15 @@ def welcomeScreen():
     fill(255)
     text("PRESS TO START",235,933)
 
-def gameplayScreen():
+def gameplayScreen(): #to draw the gameplay screen
+    #global the variables that might be changed in this function
     global score, controlKeyX, paddlePosition, ballX, ballY, ballSpeedX, ballSpeedY
    
     # background colour
     background(30,25,35)
-    # functions
-    scoreDisplay()
+    
+    # functions that are called in the gameplay screen
+    scoreDisplay() 
     livesDisplay()
     pauseButtomDisplay()
     gameArea()
@@ -137,7 +140,7 @@ def gameplayScreen():
     lifeCount()
     drawControlArea()
     
-def endScreen():
+def endScreen(): #to draw the ending screen
     #background colour
     background(30,25,35)
  
@@ -176,12 +179,12 @@ def endScreen():
     rect(100, 440, 500, 100)
     fill(170,80,75)
     textSize(30)
-    if allClear == True:
+    if allClear == True: #if the player cleared every brick display winner text
         text("Congrats!! You've won the game!!",110,500)
     else:
-        if highestLvl <= 2:
+        if highestLvl <= 2: #if the player cleared less than the first 2 rows of brick
             text("Nice Try!!",290,500)
-        elif highestLvl > 2:
+        elif highestLvl > 2: #if the player cleared more than 2 rows of brick
             text("Good job!! Close game!!",180,500)
             
     # score display
@@ -211,8 +214,8 @@ def endScreen():
     
 ######################################################################################    
 #functions
-def scoreDisplay():
-    global score
+def scoreDisplay(): #display the scoreboard on screen
+    global score #global the variables that might be changed in this function
     strokeWeight(1)
     stroke(255)
     fill(100,75,75)
@@ -225,7 +228,7 @@ def scoreDisplay():
     text(score,115,130)
     textAlign(LEFT)
         
-def livesDisplay():
+def livesDisplay(): #display player's lives on the screen
     fill(100,75,75)
     rect(260,10,250,130)
     textSize(40)
@@ -233,7 +236,7 @@ def livesDisplay():
     text("Lives left:",280,60)
     text(lives,420,120)
     
-def pauseButtomDisplay():
+def pauseButtomDisplay(): #draw pause button on the screen
     fill(100,75,75)
     rect(540,10,140,130)
     fill(255)
@@ -246,7 +249,8 @@ def pauseButtomDisplay():
         textSize(30)
         text("Resume",555,85)
 
-def gameArea():
+def gameArea(): #to change the ball directions 
+    #global the variables that might be changed in this function
     global ballX, ballY, ballSpeedX, ballSpeedY, lives
     
     fill(100)
@@ -267,24 +271,26 @@ def gameArea():
         ballX = random.randrange(100, 600)
         ballY = 600
 
-def drawBrick():
+def drawBrick(): #to draw the bricks on the game screen
+    #global the variables that might be changed in this function
     global brickX,brickY,brickColour,brickColours
     
     noStroke()
-    if brickColour == 0:
+    if brickColour == 0: #fill the first row as green
         fill(255, 17, 0)
-    elif brickColour == 1:
+    elif brickColour == 1: #fill the second row as yellow
         fill(255, 111, 0)
-    elif brickColour == 2:
+    elif brickColour == 2: #fill the third row as orange
         fill(255, 238, 0)
-    elif brickColour == 3:
+    elif brickColour == 3: #fill the forth row as red
         fill(0, 255, 4)
-    rect(55+brickX,210+brickY,50,30)
+    rect(55+brickX,210+brickY,50,30) #draws the brick
 
-def drawBricks():
+def drawBricks(): #tp draw the current bricks in the gameplay screen
+    #global the variables that might be changed in this function
     global brickX,brickY,bricks,brickColour, ballX, ballY, ballSpeedX, ballSpeedY, brickCounter
     
-    for yNum in range(8):
+    for yNum in range(8): 
         for xNum in range(10):
             brickX = xNum*60
             brickY = yNum*40
@@ -312,8 +318,8 @@ def drawBricks():
                     bricks[yNum][xNum] = 0
                     brickCounter += 1
 
-def addLvlAndScore(yNum):
-    global lvl,score
+def addLvlAndScore(yNum): #add level and score based on how many rows of bricks you've cleared
+    global lvl,score #global the variables that might be changed in this function
     
     # find level of brick touched (based on colour)
     # calculate score
@@ -330,7 +336,8 @@ def addLvlAndScore(yNum):
         lvl = 4
         score += 40
 
-def addSpeed():
+def addSpeed(): #to change the speed based on the level
+    #global the variables that might be changed in this function
     global lvl,highestLvl,ballSpeedLvl,ballSpeed,ballSpeedX,ballSpeedY
     
     # ball speed increases as the user touches higher bricks (based on colour)
@@ -341,7 +348,8 @@ def addSpeed():
         ballSpeedX = ballSpeed
         ballSpeedY = ballSpeed
         
-def drawPaddle():
+def drawPaddle(): #to draw paddle
+    #global the variables that might be changed in this function
     global ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
     
     fill(36, 98, 255)
@@ -367,7 +375,8 @@ def drawPaddle():
                     ballSpeedY = -ballSpeed - 1
                     ballSpeedX = -0.5
             
-def drawBall():
+def drawBall(): #to draw ball
+    #global the variables that might be changed in this function
     global ballX, ballY, ballSpeedX, ballSpeedY
     
     fill(255)
@@ -375,17 +384,20 @@ def drawBall():
     ballX += ballSpeedX
     ballY += ballSpeedY
     
-def lifeCount():
+def lifeCount(): #count the life point
+    #global the variables that might be changed in this function
     global lives, ballY, interface
     
-    if ballY > 900:
+    #if ball is below the paddle, that means player missed the ball. decrease 1 live
+    if ballY > 900: 
         lives = lives - 1
         lostLifeSound.trigger()
         # end game if there are no more lives
         if lives == 0:
             interface = 2
 
-def checkWin():
+def checkWin(): #check if player had cleared all bricks
+    #global the variables that might be changed in this function
     global allClear, interface
     
     # check if all bricks are gone
@@ -394,7 +406,7 @@ def checkWin():
         allClear = True
         interface = 2
         
-def drawControlArea():
+def drawControlArea(): #to draw the control area on the botton side of the game screen
     
     fill(100,75,75)
     rect(0,900,699,100)
@@ -403,30 +415,31 @@ def drawControlArea():
     fill(100)
     rect(controlKeyX,920,50,60) #draw controlKey
 
-def mouseDragged():
-    global controlKeyX
+def mouseDragged(): #mose dragged interactions
+    global controlKeyX #global the variables that might be changed in this function
     
     # control paddle with mouse
-    if mouseX >=75 and mouseX <=625:
-        controlKeyX = mouseX-25
-    elif mouseX <50:
-        controlKeyX = 50
-    elif mouseX >650:
-        controlKeyX = 600
-    paddlePosition = controlKeyX     
+    if mouseX >=75 and mouseX <=625: #if the mouse is between the control area
+        controlKeyX = mouseX-25 #control paddle X location is equal to mouse X location
+    elif mouseX <50: #if mouse goes over the left wall
+        controlKeyX = 50 #control key stays at the most-left position
+    elif mouseX >650: #if mouse goes over the right wall
+        controlKeyX = 600 #control key stays at the most-right position
+    paddlePosition = controlKeyX #assign paddle position
  
-def mousePressed():
+def mousePressed(): #mose pressed interactions
+    #global the variables that might be changed in this function
     global interface, lives, bricks, score, lvl, highestLvl, ballSpeedLvl, ballSpeed, ballSpeedX, ballSpeedY, originalBallSpeedX, originalBallSpeedY, mode, allClear, brickCounter
     
-    if interface == 0:
+    if interface == 0: #interactions in the starting screen
         # start button
         if mouseX >= 200 and mouseX <= 500 and mouseY >= 890 and mouseY <= 960:
             click.trigger()
-            interface = 1
+            interface = 1 #switch to the game play screen
             
-    elif interface == 1:
+    elif interface == 1: #interactions in the gameplay screen
         # pause button
-        if mode == "play":
+        if mode == "play": #pause the game if it is playing
             if mouseX >= 540 and mouseX <= 680 and mouseY >= 10 and mouseY <= 140: 
                 click.trigger()
                 music.pause()
@@ -436,7 +449,7 @@ def mousePressed():
                 ballSpeedX = 0
                 ballSpeedY = 0
         # resume button
-        elif mode == "pause":
+        elif mode == "pause": #continue the game if it is paused
             if mouseX >= 540 and mouseX <= 680 and mouseY >= 10 and mouseY <= 140:
                 click.trigger()
                 music.loop()
@@ -444,12 +457,14 @@ def mousePressed():
                 ballSpeedX = originalBallSpeedX
                 ballSpeedY = originalBallSpeedY
                 
-    elif interface == 2:
+    elif interface == 2: #interactions in the ending screen
         # try again button
         if mouseX >= 150 and mouseX <= 550 and mouseY >= 800 and mouseY <= 870:
             click.trigger()
             # reset variables
-            interface = 0
+            interface = 0 #switch to the starting screen
+
+            #reset all the variables
             lives = 3
             score = 0
             lvl = 1
@@ -463,17 +478,18 @@ def mousePressed():
                 for x in range(len(bricks[y])):
                     bricks[y][x] = 1
             
-def keyPressed():
+def keyPressed(): #press key interactions
+    #global the variables that might be changed in this function
     global controlKeyX, paddlePosition
     
     # control paddle with arrow keys
     if key == CODED:
-        if keyCode == LEFT:
+        if keyCode == LEFT: #paddle goes left if left arrow key is pressed
             controlKeyX += -10
-        elif keyCode == RIGHT:
+        elif keyCode == RIGHT: #paddle goes right if left arrow key is pressed
             controlKeyX += 10
         
-        if controlKeyX < 50:
+        if controlKeyX < 50: 
             controlKeyX = 50
         elif controlKeyX > 600:
             controlKeyX = 600
